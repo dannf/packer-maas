@@ -13,7 +13,7 @@ locals {
   }
   qemu_cpu = {
     "amd64" = "host"
-    "arm64" = "cortex-a57"
+    "arm64" = "host"
   }
 
   proxy_env = [
@@ -49,7 +49,8 @@ source "qemu" "cloudimg" {
     ["-drive", "if=pflash,format=raw,id=ovmf_code,readonly=on,file=/usr/share/${lookup(local.uefi_imp, var.architecture, "")}/${lookup(local.uefi_imp, var.architecture, "")}_CODE.fd"],
     ["-drive", "if=pflash,format=raw,id=ovmf_vars,file=${lookup(local.uefi_imp, var.architecture, "")}_VARS.fd"],
     ["-drive", "file=output-cloudimg/packer-cloudimg,format=qcow2"],
-    ["-drive", "file=seeds-cloudimg.iso,format=raw"]
+    ["-drive", "file=seeds-cloudimg.iso,format=raw"],
+    ["-enable-kvm"],
   ]
   shutdown_command       = "sudo -S shutdown -P now"
   ssh_handshake_attempts = 500
